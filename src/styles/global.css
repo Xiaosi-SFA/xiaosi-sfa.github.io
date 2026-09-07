@@ -74,13 +74,12 @@ html, body {
 }
 .link-primary:hover { text-decoration: underline; }
 
+/* 通用 Liquid Glass 玻璃卡片体系（中心微雾保护文字，四周倒角平滑淡出至完全清透，透出锐利微折射） */
 .liquid-glass {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   border-radius: 1.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.45);
   box-shadow:
     0 8px 32px 0 rgba(0, 0, 0, 0.05),
@@ -88,36 +87,58 @@ html, body {
   transition:
     transform 320ms cubic-bezier(0.25, 1, 0.35, 1),
     box-shadow 320ms cubic-bezier(0.25, 1, 0.35, 1),
-    border-color 260ms ease,
-    background-color 260ms ease;
+    border-color 260ms ease;
   will-change: transform;
 }
 
-.dark .liquid-glass {
-  background: rgba(255, 255, 255, 0.035);
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
+  /* 椭圆向心渐变遮罩：中心 100% 磨砂雾化保护文字，边缘 14~28px 倒角区平滑淡出至 0 彻底清澈 */
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
+  transition: background-color 260ms ease;
+}
+
+.dark .liquid-glass {
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     0 12px 36px 0 rgba(0, 0, 0, 0.45),
     0 2px 8px 0 rgba(0, 0, 0, 0.25);
 }
 
+.dark .liquid-glass::before {
+  background: rgba(255, 255, 255, 0.035);
+}
+
 .liquid-glass:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.35);
   border-color: rgba(255, 255, 255, 0.65);
   box-shadow:
     0 16px 48px 0 rgba(0, 0, 0, 0.08),
     0 4px 12px 0 rgba(0, 0, 0, 0.03);
 }
 
+.liquid-glass:hover::before {
+  background: rgba(255, 255, 255, 0.30);
+}
+
 .dark .liquid-glass:hover {
-  background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.16);
   box-shadow:
     0 20px 48px 0 rgba(0, 0, 0, 0.55),
     0 4px 12px 0 rgba(0, 0, 0, 0.35);
+}
+
+.dark .liquid-glass:hover::before {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .liquid-pill {
