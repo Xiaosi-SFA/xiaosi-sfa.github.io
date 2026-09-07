@@ -70,6 +70,85 @@ import '@styles/wave.css'
     let animId = 0;
     let time = 0;
 
+    // 收集页面中的真实玻璃物理折射元件（如 .dept-card 等）
+    let glassLenses = [];
+    function updateGlassLenses() {
+      const els = document.querySelectorAll('.dept-card');
+      const lenses = [];
+      for (let i = 0; i < els.length; i++) {
+        const rect = els[i].getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          lenses.push({
+            cx: rect.left + rect.width / 2,
+            cy: rect.top + rect.height / 2,
+            hw: rect.width / 2,
+            hh: rect.height / 2,
+            r: 20, // 对应 border-radius: 1.25rem (20px)
+            bevel: 36, // 边缘折射带宽度（像素）
+            strength: 26, // 折射弯曲位移量（像素）
+          });
+        }
+      }
+      glassLenses = lenses;
+    }
+
+    // 物理光学折射计算（Snell's Law 凸透镜/倒角边缘光线偏折与色散）
+    function refract(x, y, chromaticOffset = 0) {
+      let rx = x;
+      let ry = y;
+      for (let i = 0; i < glassLenses.length; i++) {
+        const l = glassLenses[i];
+        const margin = 24;
+        if (
+          x < l.cx - l.hw - margin ||
+          x > l.cx + l.hw + margin ||
+          y < l.cy - l.hh - margin ||
+          y > l.cy + l.hh + margin
+        ) {
+          continue;
+        }
+
+        const dx = x - l.cx;
+        const dy = y - l.cy;
+        const absX = Math.abs(dx);
+        const absY = Math.abs(dy);
+
+        const qx = absX - (l.hw - l.r);
+        const qy = absY - (l.hh - l.r);
+
+        const ox = Math.max(qx, 0);
+        const oy = Math.max(qy, 0);
+        const outDist = Math.hypot(ox, oy) - l.r;
+        const inDist = Math.min(Math.max(qx, qy), 0) - l.r;
+        const d = (qx > 0 || qy > 0) ? outDist : inDist;
+
+        // 在倒角边缘区（d 从 8px 外部到 -bevel 内部）产生物理折射
+        const bevel = l.bevel;
+        if (d < 8 && d > -bevel) {
+          let nx = 0, ny = 0;
+          if (qx > 0 && qy > 0) {
+            const h = Math.hypot(ox, oy) || 1;
+            nx = (dx > 0 ? 1 : -1) * (ox / h);
+            ny = (dy > 0 ? 1 : -1) * (oy / h);
+          } else if (qx > qy) {
+            nx = dx > 0 ? 1 : -1;
+          } else {
+            ny = dy > 0 ? 1 : -1;
+          }
+
+          // 弯月面弧形透镜斜率函数（Bell-shaped profile）
+          const t = (d - 8) / (-bevel - 8);
+          const slope = Math.sin(t * Math.PI);
+          const strength = l.strength * (1 + chromaticOffset);
+          const disp = slope * strength;
+
+          rx += nx * disp;
+          ry += ny * disp;
+        }
+      }
+      return { x: rx, y: ry };
+    }
+
     function isDarkMode() {
       return document.documentElement.classList.contains('dark');
     }
@@ -83,9 +162,12 @@ import '@styles/wave.css'
       canvas.style.width = width + 'px';
       canvas.style.height = height + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      updateGlassLenses();
     }
 
     window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('scroll', updateGlassLenses, { passive: true });
+    document.addEventListener('astro:page-load', updateGlassLenses);
     resize();
 
     // 汉宁窗包络函数
@@ -111,7 +193,8 @@ import '@styles/wave.css'
       ctx.lineTo(width, centerY);
       ctx.stroke();
 
-      const step = Math.max(3, Math.floor(width / 220));
+      const step = Math.max(2, Math.floor(width / 320));
+      const hasLenses = glassLenses.length > 0;
 
       for (let i = 0; i < WAVES.length; i++) {
         const w = WAVES[i];
@@ -135,13 +218,15 @@ import '@styles/wave.css'
           const env = envelope(x, width);
           const wave1 = Math.sin(x * w.freq1 + time * w.speed1 + w.phase);
           const wave2 = Math.sin(x * w.freq2 + time * w.speed2 + w.phase * 1.5) * 0.30;
-          const y = centerY + (wave1 + wave2) * amp * env;
+          const origY = centerY + (wave1 + wave2) * amp * env;
+
+          const pt = hasLenses ? refract(x, origY, 0) : { x, y: origY };
 
           if (!started) {
-            ctx.moveTo(x, y);
+            ctx.moveTo(pt.x, pt.y);
             started = true;
           } else {
-            ctx.lineTo(x, y);
+            ctx.lineTo(pt.x, pt.y);
           }
         }
 
