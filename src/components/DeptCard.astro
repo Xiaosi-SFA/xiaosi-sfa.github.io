@@ -14,6 +14,8 @@ const resolvedIcon = icon ? withBase(icon) : undefined
   href={resolvedHref}
   class="dept-card group block w-full max-w-full rounded-2xl p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
 >
+  <!-- 渐变磨砂层：核心区域保持适度磨砂保证文字可读性，四周倒角边缘淡出至完全清透，透出晶莹的真实物理折射 -->
+  <div class="dept-card-blur" aria-hidden="true"></div>
   <div class="relative z-10 flex items-start gap-4">
     <div class="dept-card-icon flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-xl text-sky-600 dark:text-sky-400">
       {resolvedIcon ? (
