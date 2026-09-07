@@ -7,72 +7,9 @@
   min-width: 0;
 }
 
-/* 部门卡片真实物理折射玻璃板（边缘渐变淡化磨砂，露出晶莹清透折射） */
+/* 部门卡片继承通用 .liquid-glass 风格 */
 .dept-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.05),
-    0 2px 6px 0 rgba(0, 0, 0, 0.02);
-  transition:
-    transform 320ms cubic-bezier(0.25, 1, 0.35, 1),
-    box-shadow 320ms cubic-bezier(0.25, 1, 0.35, 1),
-    border-color 260ms ease;
-  will-change: transform;
-}
-
-.dark .dept-card {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 12px 36px 0 rgba(0, 0, 0, 0.45),
-    0 2px 8px 0 rgba(0, 0, 0, 0.25);
-}
-
-/* 渐变磨砂层：核心文字区域保持平滑模糊保证文字可读，四周 28px 倒角边缘渐变消退至完全清透（0 模糊），使正弦波折射清晰锐利呈现 */
-.dept-card-blur {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 0;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  /* 椭圆向心遮罩：中心 100% 磨砂保护文字，外围 28px 倒角边缘平滑衰减到 0 成为纯净清澈透镜 */
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
-  transition: background-color 260ms ease;
-}
-
-.dark .dept-card-blur {
-  background: rgba(255, 255, 255, 0.035);
-}
-
-.dept-card:hover,
-.dept-card:focus-visible {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 16px 48px 0 rgba(0, 0, 0, 0.08),
-    0 4px 12px 0 rgba(0, 0, 0, 0.03);
-}
-
-.dark .dept-card:hover,
-.dark .dept-card:focus-visible {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 20px 48px 0 rgba(0, 0, 0, 0.55),
-    0 4px 12px 0 rgba(0, 0, 0, 0.35);
-}
-
-.dept-card:hover .dept-card-blur {
-  background: rgba(255, 255, 255, 0.30);
-}
-
-.dark .dept-card:hover .dept-card-blur {
-  background: rgba(255, 255, 255, 0.05);
+  /* 基础玻璃样式由 .liquid-glass 提供 */
 }
 
 /* 内部图标容器：通透微光 */
