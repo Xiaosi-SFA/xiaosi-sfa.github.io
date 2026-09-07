@@ -84,26 +84,26 @@ import '@styles/wave.css'
             hw: rect.width / 2,
             hh: rect.height / 2,
             r: 20, // 对应 border-radius: 1.25rem (20px)
-            bevel: 36, // 边缘折射带宽度（像素）
-            strength: 26, // 折射弯曲位移量（像素）
+            bevel: 28, // 倒角过渡带宽度（仅在卡片内部 0 ~ -28px 产生折射）
+            strength: 18, // 适度的真实物理光线偏折强度
           });
         }
       }
       glassLenses = lenses;
     }
 
-    // 物理光学折射计算（Snell's Law 凸透镜/倒角边缘光线偏折与色散）
+    // 物理光学折射计算（仅在玻璃实体内部 d <= 0 时发生折射，绝不溢出到外侧）
     function refract(x, y, chromaticOffset = 0) {
       let rx = x;
       let ry = y;
       for (let i = 0; i < glassLenses.length; i++) {
         const l = glassLenses[i];
-        const margin = 24;
+        // 严格 AABB 粗筛：必须在卡片边界内
         if (
-          x < l.cx - l.hw - margin ||
-          x > l.cx + l.hw + margin ||
-          y < l.cy - l.hh - margin ||
-          y > l.cy + l.hh + margin
+          x < l.cx - l.hw ||
+          x > l.cx + l.hw ||
+          y < l.cy - l.hh ||
+          y > l.cy + l.hh
         ) {
           continue;
         }
@@ -122,9 +122,10 @@ import '@styles/wave.css'
         const inDist = Math.min(Math.max(qx, qy), 0) - l.r;
         const d = (qx > 0 || qy > 0) ? outDist : inDist;
 
-        // 在倒角边缘区（d 从 8px 外部到 -bevel 内部）产生物理折射
+        // 关键约束：折射仅发生在卡片实体内部（d <= 0），绝不能溢出到外侧！
+        // 在边缘倒角区域（-bevel <= d <= 0）产生渐进式法线偏折
         const bevel = l.bevel;
-        if (d < 8 && d > -bevel) {
+        if (d <= 0 && d >= -bevel) {
           let nx = 0, ny = 0;
           if (qx > 0 && qy > 0) {
             const h = Math.hypot(ox, oy) || 1;
@@ -136,14 +137,16 @@ import '@styles/wave.css'
             ny = dy > 0 ? 1 : -1;
           }
 
-          // 弯月面弧形透镜斜率函数（Bell-shaped profile）
-          const t = (d - 8) / (-bevel - 8);
-          const slope = Math.sin(t * Math.PI);
+          // 弯月面倒角斜率：在内边界 d = -bevel 处斜率为 0（平滑衔接卡片平整内部），
+          // 在物理外边缘 d = 0 处折射位移自然收敛归零（连续闭合，无边缘突变跳跃）
+          const t = -d / bevel; // 0 (边界 d=0) 到 1 (深处 d=-bevel)
+          const slope = Math.sin(t * Math.PI); // t=0 处为 0，t=1 处为 0，中间倒角处最大
           const strength = l.strength * (1 + chromaticOffset);
           const disp = slope * strength;
 
-          rx += nx * disp;
-          ry += ny * disp;
+          // 物理光线朝卡片内部/法线倾斜偏折
+          rx -= nx * disp;
+          ry -= ny * disp;
         }
       }
       return { x: rx, y: ry };
