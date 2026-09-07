@@ -106,7 +106,7 @@
   .site-header .nav-main .nav-link > svg { display: block; }
 }
 
-/* 导航滑动滑块：Apple Music 清透液态玻璃质感（高透光基底、顶部弧面反光、内倒角双向折射与细腻柔和浮动阴影） */
+/* 导航滑动滑块：Liquid Glass 玻璃胶囊体系（中心微雾保护文字，四周倒角平滑淡出至完全清透，物理克制） */
 .nav-highlight {
   position: absolute;
   height: var(--nav-highlight-h, 78%);
@@ -117,144 +117,84 @@
   opacity: 0;
   pointer-events: none;
   z-index: 0;
+  isolation: isolate;
   transform: scale(1);
   transform-origin: center center;
 
-  /* 常态：清透微光液态玻璃基底 */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.68) 0%,
-    rgba(255, 255, 255, 0.38) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%) brightness(102%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(102%);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  /* 常态：纯净通透边框与环境软阴影（无人工高光刺眼线条） */
+  border: 1px solid rgba(255, 255, 255, 0.45);
   box-shadow:
-    0 4px 16px -2px rgba(0, 0, 0, 0.06),
-    0 2px 6px -1px rgba(0, 0, 0, 0.03),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 0 10px 0 rgba(255, 255, 255, 0.25);
+    0 4px 16px -2px rgba(0, 0, 0, 0.05),
+    0 2px 6px -1px rgba(0, 0, 0, 0.02);
 
   /* Apple 物理阻尼流体运动 */
   transition:
     left 320ms cubic-bezier(0.25, 1, 0.35, 1),
     width 320ms cubic-bezier(0.25, 1, 0.35, 1),
     transform 260ms cubic-bezier(0.25, 1, 0.35, 1),
-    background 220ms ease,
     border-color 220ms ease,
     box-shadow 220ms ease,
     opacity 180ms ease;
   will-change: left, width, transform;
 }
 
-.dark .nav-highlight {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.14) 0%,
-    rgba(255, 255, 255, 0.04) 100%
-  );
-  backdrop-filter: blur(20px) saturate(180%) brightness(110%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(110%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 6px 20px -2px rgba(0, 0, 0, 0.45),
-    0 2px 6px 0 rgba(0, 0, 0, 0.25),
-    inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0.8px 0 rgba(255, 255, 255, 0.1),
-    inset 0 0 8px 0 rgba(255, 255, 255, 0.06);
-}
-
-/* 边缘 1px 极细光学折射环（纯净无杂色） */
+/* 向心渐变磨砂层：核心区域保持微雾保证导航文字清晰易读，外围边缘自然消退至完全清透 */
 .nav-highlight::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-  opacity: 0.8;
-  z-index: 1;
-  transition: opacity 220ms ease;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
+  transition: background-color 220ms ease, opacity 220ms ease;
+}
+
+.dark .nav-highlight {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 6px 20px -2px rgba(0, 0, 0, 0.45),
+    0 2px 6px 0 rgba(0, 0, 0, 0.25);
 }
 
 .dark .nav-highlight::before {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.035);
 }
 
-/* 顶部镜面反光弧面弯月（真实液体表面张力高光 Meniscus Sheen） */
-.nav-highlight::after {
-  content: "";
-  position: absolute;
-  inset: 1px 2px auto 2px;
-  height: 48%;
-  border-radius: 9999px 9999px 0 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(255, 255, 255, 0.15) 60%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.9;
-  transition: opacity 220ms ease;
-}
-
-.dark .nav-highlight::after {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.04) 60%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  opacity: 0.75;
-}
-
-/* 活跃态（悬浮/聚焦/移动）：有机微膨胀、透光度增加与环境光晕 */
+/* 活跃态（悬浮/聚焦/移动）：有机微膨胀、微光升温 */
 .nav-main:hover .nav-highlight,
 .nav-main:focus-within .nav-highlight,
 .nav-highlight.is-active {
-  transform: scale(1.03) translateY(-0.5px);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.78) 0%,
-    rgba(255, 255, 255, 0.46) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.85);
+  transform: scale(1.02) translateY(-0.5px);
+  border-color: rgba(255, 255, 255, 0.65);
   box-shadow:
     0 8px 24px -3px rgba(0, 0, 0, 0.08),
-    0 2px 8px -1px rgba(0, 0, 0, 0.03),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1),
-    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 0 12px 0 rgba(255, 255, 255, 0.32);
+    0 2px 8px -1px rgba(0, 0, 0, 0.03);
+}
+
+.nav-main:hover .nav-highlight::before,
+.nav-main:focus-within .nav-highlight::before,
+.nav-highlight.is-active::before {
+  background: rgba(255, 255, 255, 0.30);
 }
 
 .dark .nav-main:hover .nav-highlight,
 .dark .nav-main:focus-within .nav-highlight,
 .dark .nav-highlight.is-active {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.16);
   box-shadow:
-    0 10px 28px -4px rgba(0, 0, 0, 0.5),
-    0 3px 8px -2px rgba(0, 0, 0, 0.3),
-    inset 0 1.5px 0.8px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0.8px 0 rgba(255, 255, 255, 0.14),
-    inset 0 0 10px 0 rgba(255, 255, 255, 0.1);
+    0 10px 28px -4px rgba(0, 0, 0, 0.55),
+    0 3px 8px -2px rgba(0, 0, 0, 0.3);
 }
 
-.nav-main:hover .nav-highlight::before,
-.nav-main:hover .nav-highlight::after,
-.nav-main:focus-within .nav-highlight::before,
-.nav-main:focus-within .nav-highlight::after,
-.nav-highlight.is-active::before,
-.nav-highlight.is-active::after {
-  opacity: 1;
+.dark .nav-main:hover .nav-highlight::before,
+.dark .nav-main:focus-within .nav-highlight::before,
+.dark .nav-highlight.is-active::before {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 @media (prefers-reduced-motion: reduce) {
