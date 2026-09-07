@@ -84,21 +84,20 @@ import '@styles/wave.css'
             hw: rect.width / 2,
             hh: rect.height / 2,
             r: 20, // 对应 border-radius: 1.25rem (20px)
-            bevel: 34, // 倒角过渡带宽度（卡片内侧 0 ~ -34px 产生平滑物理折射）
-            strength: 24, // 物理光线偏折强度，清晰灵动
+            bevel: 14, // 真实物理薄倒角宽度（14px 细致倒角圈）
+            maxDisp: 2.2, // 真实薄玻璃微折射：仅 2.2px 微小物理光程差，自然克制
           });
         }
       }
       glassLenses = lenses;
     }
 
-    // 物理光学折射计算（仅在玻璃实体内部 d <= 0 时发生折射，绝不溢出到外侧）
+    // 真实薄玻璃微折射：仅在边缘 14px 极窄倒角圈产生 2px 级别的自然微折射，腹地完全平整无变形
     function refract(x, y, chromaticOffset = 0) {
       let rx = x;
       let ry = y;
       for (let i = 0; i < glassLenses.length; i++) {
         const l = glassLenses[i];
-        // 严格 AABB 粗筛：必须在卡片边界内
         if (
           x < l.cx - l.hw ||
           x > l.cx + l.hw ||
@@ -122,8 +121,7 @@ import '@styles/wave.css'
         const inDist = Math.min(Math.max(qx, qy), 0) - l.r;
         const d = (qx > 0 || qy > 0) ? outDist : inDist;
 
-        // 关键约束：折射仅发生在卡片实体内部（d <= 0），绝不能溢出到外侧！
-        // 在边缘倒角区域（-bevel <= d <= 0）产生渐进式法线偏折
+        // 仅在卡片实体边缘倒角圈（0 到 -bevel）产生微弱物理折射，腹地平坦完全不变形
         const bevel = l.bevel;
         if (d <= 0 && d >= -bevel) {
           let nx = 0, ny = 0;
@@ -137,14 +135,13 @@ import '@styles/wave.css'
             ny = dy > 0 ? 1 : -1;
           }
 
-          // 弯月面倒角斜率：在内边界 d = -bevel 处斜率为 0（平滑衔接卡片平整内部），
-          // 在物理外边缘 d = 0 处折射位移自然收敛归零（连续闭合，无边缘突变跳跃）
-          const t = -d / bevel; // 0 (边界 d=0) 到 1 (深处 d=-bevel)
-          const slope = Math.sin(t * Math.PI); // t=0 处为 0，t=1 处为 0，中间倒角处最大
-          const strength = l.strength * (1 + chromaticOffset);
-          const disp = slope * strength;
+          // 物理钟形平滑剖面 S(u) = 30 * u^2 * (1 - u)^2
+          // 在物理外边缘 u=0 (d=0) 处位移严格为 0，内边缘 u=1 (d=-bevel) 处平滑切入无变形
+          const u = -d / bevel;
+          const bell = 16 * u * u * (1 - u) * (1 - u); // 峰值归一
+          const disp = bell * l.maxDisp * (1 + chromaticOffset);
 
-          // 物理光线朝卡片内部/法线倾斜偏折
+          // 极细腻的边缘微光折射向心偏转
           rx -= nx * disp;
           ry -= ny * disp;
         }
