@@ -70,14 +70,18 @@ import '@styles/wave.css'
     let animId = 0;
     let time = 0;
 
-    // 收集页面中的真实玻璃物理折射元件（如 .dept-card 等）
+    // 收集页面中的真实玻璃物理折射元件（如 .dept-card, .liquid-glass, .card 等）
     let glassLenses = [];
     function updateGlassLenses() {
-      const els = document.querySelectorAll('.dept-card');
+      const els = document.querySelectorAll('.dept-card, .liquid-glass, .card');
       const lenses = [];
+      const visited = new Set();
       for (let i = 0; i < els.length; i++) {
-        const rect = els[i].getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
+        const el = els[i];
+        if (visited.has(el)) continue;
+        visited.add(el);
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 30 && rect.height > 30) {
           lenses.push({
             cx: rect.left + rect.width / 2,
             cy: rect.top + rect.height / 2,
