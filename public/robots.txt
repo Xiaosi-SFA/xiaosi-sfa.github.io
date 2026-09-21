@@ -1,0 +1,34 @@
+# Robots.txt for Sichuan University Sci-Fi Association (SFA Web)
+# 仅对搜索引擎开放首页，禁止抓取所有文章、活动、部门、小组等内部内容界面
+
+User-agent: *
+# 允许抓取首页（含中英文首页）与必要静态渲染资源
+Allow: /$
+Allow: /zh-cn/$
+Allow: /en/$
+Allow: /_astro/
+Allow: /favicon.svg
+Allow: /favicon.ico
+
+# 禁止抓取所有内容与内部功能界面
+Disallow: /articles/
+Disallow: /activity/
+Disallow: /about/
+Disallow: /groups/
+Disallow: /links/
+Disallow: /tags/
+Disallow: /zh-cn/articles/
+Disallow: /zh-cn/activity/
+Disallow: /zh-cn/about/
+Disallow: /zh-cn/groups/
+Disallow: /zh-cn/links/
+Disallow: /en/articles/
+Disallow: /en/activity/
+Disallow: /en/about/
+Disallow: /en/groups/
+Disallow: /en/links/
+Disallow: /rss.xml
+Disallow: /404
+
+# 兜底限制除首页外的所有子路径
+Disallow: /*/
