@@ -1,11 +1,29 @@
 import { defineCollection, z } from 'astro:content'
 
+const authorItemSchema = z.union([
+  z.string(),
+  z.object({
+    name: z.string(),
+    role: z.string().optional(),
+    corresponding: z.boolean().optional(),
+    equalContribution: z.boolean().optional(),
+    email: z.string().optional(),
+    affiliation: z.string().optional(),
+  }),
+])
+
+const authorFieldSchema = z.union([
+  z.string(),
+  z.array(authorItemSchema),
+])
+
 const articles = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     date: z.date(),
-    author: z.string().default('SFA'),
+    author: authorFieldSchema.default('SFA'),
+    authors: z.array(authorItemSchema).optional(),
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
@@ -20,7 +38,8 @@ const activity = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.date(),
-    author: z.string().optional(),
+    author: authorFieldSchema.optional(),
+    authors: z.array(authorItemSchema).optional(),
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),

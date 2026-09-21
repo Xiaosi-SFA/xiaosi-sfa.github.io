@@ -6,6 +6,7 @@ import TOC from '@components/TOC.astro'
 import RelatedActivity from '@components/RelatedActivity.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
+import AuthorList from '@components/AuthorList.astro'
 import { withBase } from '@utils/path'
 
 export async function getStaticPaths() {
@@ -37,12 +38,13 @@ const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
         <img src={withBase(entry.data.cover)} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-2xl mb-6 shadow-sm border border-slate-200/60 dark:border-white/10" />
       ) : null}
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
-      <div class="mt-3 pb-6 border-b border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-        <div class="flex items-center gap-2">
+      <div class="mt-3 pb-6 border-b border-black/[0.06] dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <time datetime={entry.data.date?.toISOString()}>
             {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
           </time>
-          {entry.data.author ? <span>· {entry.data.author}</span> : ''}
+          <span>·</span>
+          <AuthorList author={entry.data.author} authors={entry.data.authors} />
           {entry.data.location ? <span>· {entry.data.location}</span> : ''}
         </div>
         <div class="hidden sm:flex tag-list flex-nowrap max-w-full overflow-hidden">

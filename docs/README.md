@@ -55,7 +55,7 @@
 | :--- | :--- | :---: | :--- | :--- |
 | `title` | `string` | **必填** | - | 文章主标题 |
 | `date` | `YYYY-MM-DD` | **必填** | - | 发布或撰写日期 |
-| `author` | `string` | 选填 | `SFA` | 作者署名（支持网名或实名） |
+| `author` / `authors` | `string` 或 `object[]` | 选填 | `SFA` | 作者署名。支持单一字符串或按学术规范配置列表（支持标注作者顺序、`equalContribution: true` 同等贡献/共同一作、`corresponding: true` 通讯作者、分工角色 `role`） |
 | `tags` | `string[]` | 选填 | `[]` | 标签列表，用于检索与推荐关联 |
 | `summary` | `string` | 选填 | 自动提取 | 卡片摘要（建议 100~200 字，上限 280） |
 | `cover` | `string` | 选填 | 空 | 封面图片路径（支持本地 `/images/...` 或外部 URL） |

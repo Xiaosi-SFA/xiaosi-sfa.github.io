@@ -1,7 +1,17 @@
 ---
 title: 活动后记｜给岁月以文明——《三体》发表二十周年主题沙龙
 date: 2026-09-19
-author: 云梦泽
+authors:
+  - name: 云梦泽
+    role: 文稿
+    equalContribution: true
+    corresponding: true
+  - name: 柏夜
+    role: 排版
+    equalContribution: true
+  - name: 夜立淂
+    role: 审核
+    corresponding: true
 location: 四川大学
 hostType: department
 hostSlug: SFA
@@ -107,9 +117,3 @@ align: left
 > **宇宙很大，生活更大。**
 > 
 > 期待在下一次活动中与诸位重逢！
-
-<br />
-
-<div style="text-align: right;" class="no-indent text-sm text-slate-500 dark:text-slate-400">
-  <p>文稿：云梦泽 &nbsp;|&nbsp; 排版：柏夜 &nbsp;|&nbsp; 审核：夜立淂</p>
-</div>
