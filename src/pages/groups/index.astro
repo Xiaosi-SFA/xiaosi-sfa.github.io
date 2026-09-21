@@ -5,6 +5,9 @@ import MemberCard from '@components/MemberCard.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
 import { withBase } from '@utils/path'
+import { getI18n } from '@utils/i18n'
+
+const { t } = getI18n(Astro.url)
 
 const groups = (await getCollection('groups')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
 const items = await Promise.all(
@@ -22,10 +25,10 @@ function initials(title: string) {
   return title.slice(0, 2)
 }
 ---
-<BaseLayout title="兴趣小组 - SFA">
+<BaseLayout title={`${t('groups.title', '兴趣小组')} - SFA`}>
   <section class="max-w-6xl mx-auto py-6 space-y-8">
     <div class="mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">兴趣小组</h1>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('groups.title', '兴趣小组')}</h1>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

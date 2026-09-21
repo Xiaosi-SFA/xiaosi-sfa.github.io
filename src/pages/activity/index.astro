@@ -2,7 +2,10 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
+import { getI18n } from '@utils/i18n'
 import '@styles/card.css'
+
+const { t } = getI18n(Astro.url)
 
 const activities = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))
@@ -12,10 +15,10 @@ const activities = (await (getCollection as any)('activity'))
     return bd - ad
   })
 ---
-<BaseLayout title="活动">
+<BaseLayout title={t('activity.title', '活动')}>
   <div class="max-w-6xl mx-auto py-6">
     <div class="mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">活动</h1>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('activity.title', '活动')}</h1>
     </div>
 
     {activities.length ? (
@@ -32,7 +35,7 @@ const activities = (await (getCollection as any)('activity'))
         ))}
       </div>
     ) : (
-      <p class="text-slate-500 text-sm">尚无活动记录。</p>
+      <p class="text-slate-500 text-sm">{t('activity.noActivities', '尚无活动记录。')}</p>
     )}
   </div>
 </BaseLayout>
