@@ -3,17 +3,22 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
 import { getI18n } from '@utils/i18n'
+import { withBase } from '@utils/path'
 import '@styles/card.css'
 
-const { t } = getI18n(Astro.url)
+const { t, isEn, localePrefix } = getI18n(Astro.url)
 
-const activities = (await (getCollection as any)('activity'))
+const allActivities = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))
-  .sort((a: any, b: any) => {
-    const ad = a.data.date?.valueOf() ?? 0
-    const bd = b.data.date?.valueOf() ?? 0
-    return bd - ad
-  })
+
+const activities = (isEn
+  ? allActivities.filter((e: any) => e.slug.startsWith('en/'))
+  : allActivities.filter((e: any) => !e.slug.startsWith('en/'))
+).sort((a: any, b: any) => {
+  const ad = a.data.date?.valueOf() ?? 0
+  const bd = b.data.date?.valueOf() ?? 0
+  return bd - ad
+})
 ---
 <BaseLayout title={t('activity.title', '活动')}>
   <div class="max-w-6xl mx-auto py-6">
@@ -23,16 +28,19 @@ const activities = (await (getCollection as any)('activity'))
 
     {activities.length ? (
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {activities.map((e: any) => (
-          <ActivityCard
-            href={`/activity/${e.slug}/`}
-            title={e.data.title}
-            date={e.data.date}
-            cover={e.data.cover}
-            summary={e.data.summary}
-            tags={e.data.tags}
-          />
-        ))}
+        {activities.map((e: any) => {
+          const cleanSlug = e.slug.replace(/^en\//, '')
+          return (
+            <ActivityCard
+              href={withBase(`${localePrefix}/activity/${cleanSlug}/`)}
+              title={e.data.title}
+              date={e.data.date}
+              cover={e.data.cover}
+              summary={e.data.summary}
+              tags={e.data.tags}
+            />
+          )
+        })}
       </div>
     ) : (
       <p class="text-slate-500 text-sm">{t('activity.noActivities', '尚无活动记录。')}</p>
