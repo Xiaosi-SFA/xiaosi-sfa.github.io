@@ -21,18 +21,18 @@
   color: #ffffff;
 }
 
-/* 透镜微聚光放大：被选中的文字微放大（~3.5%），纯净通透 */
+/* 透镜微聚光放大：被选中的文字微放大（~3.5%），纯净通透无任何发光光晕 */
 .has-navhl .nav-link.is-active {
   color: #000000;
   font-weight: 600;
   transform: scale(1.035);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+  text-shadow: none;
 }
 .dark .has-navhl .nav-link.is-active {
   color: #ffffff;
   font-weight: 600;
   transform: scale(1.035);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: none;
 }
 
 /* 当鼠标滑向其他项时，原激活项离开透镜恢复原比例，当前滑块所在项受透镜放大 */
@@ -56,14 +56,14 @@
   color: #000000;
   font-weight: 600;
   transform: scale(1.035);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+  text-shadow: none;
 }
 .dark .has-navhl .nav-link:hover,
 .dark .has-navhl .nav-link:focus-visible {
   color: #ffffff;
   font-weight: 600;
   transform: scale(1.035);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: none;
 }
 
 .nav-main { position: relative; }
@@ -106,7 +106,7 @@
   .site-header .nav-main .nav-link > svg { display: block; }
 }
 
-/* 导航滑动滑块：Liquid Glass 玻璃胶囊体系（中心微雾保护文字，四周倒角平滑淡出至完全清透，物理克制） */
+/* 导航滑动滑块：真实纯净光学液态玻璃透镜（完全无底色、依靠自然折射与物理菲涅尔微边框） */
 .nav-highlight {
   position: absolute;
   height: var(--nav-highlight-h, 78%);
@@ -117,84 +117,62 @@
   opacity: 0;
   pointer-events: none;
   z-index: 0;
-  isolation: isolate;
-  transform: scale(1);
   transform-origin: center center;
 
-  /* 常态：纯净通透边框与环境软阴影（无人工高光刺眼线条） */
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  box-shadow:
-    0 4px 16px -2px rgba(0, 0, 0, 0.05),
-    0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  /* 真实水滴物理拉伸与受力倾斜（Squash & Stretch） */
+  transform:
+    scaleX(var(--hl-scale-x, 1))
+    scaleY(var(--hl-scale-y, 1))
+    skewX(var(--hl-skew, 0deg));
 
-  /* Apple 物理阻尼流体运动 */
+  /* 核心：玻璃本质为完全透明（无任何灰/白填充底色），完全依靠背景折射 */
+  background: transparent !important;
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+
+  /* 物理玻璃表面轮廓：纯净纤细边框与柔和微弱接触阴影，绝无人工高光与泛光 */
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
+
+  /* Apple 物理阻尼流体运动：位移平滑，形变弹性解耦回弹 */
   transition:
     left 320ms cubic-bezier(0.25, 1, 0.35, 1),
     width 320ms cubic-bezier(0.25, 1, 0.35, 1),
-    transform 260ms cubic-bezier(0.25, 1, 0.35, 1),
+    transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 220ms ease,
     box-shadow 220ms ease,
     opacity 180ms ease;
   will-change: left, width, transform;
 }
 
-/* 向心渐变磨砂层：核心区域保持微雾保证导航文字清晰易读，外围边缘自然消退至完全清透 */
-.nav-highlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: -1;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 90%);
-  transition: background-color 220ms ease, opacity 220ms ease;
+/* 彻底移除任何人工粗劣的白色伪元素高光抹痕，保持光学纯净 */
+.nav-highlight::before,
+.nav-highlight::after {
+  display: none !important;
 }
 
+/* 深色模式：完全透明的纯黑水晶透镜，零发灰底色，无任何泛光与高光棱线 */
 .dark .nav-highlight {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 6px 20px -2px rgba(0, 0, 0, 0.45),
-    0 2px 6px 0 rgba(0, 0, 0, 0.25);
+  background: transparent !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.45);
 }
 
-.dark .nav-highlight::before {
-  background: rgba(255, 255, 255, 0.035);
-}
-
-/* 活跃态（悬浮/聚焦/移动）：有机微膨胀、微光升温 */
+/* 活跃态（悬浮/聚焦/移动）：保持 100% 纯净无底色、无内阴影泛光 */
 .nav-main:hover .nav-highlight,
 .nav-main:focus-within .nav-highlight,
 .nav-highlight.is-active {
-  transform: scale(1.02) translateY(-0.5px);
-  border-color: rgba(255, 255, 255, 0.65);
-  box-shadow:
-    0 8px 24px -3px rgba(0, 0, 0, 0.08),
-    0 2px 8px -1px rgba(0, 0, 0, 0.03);
-}
-
-.nav-main:hover .nav-highlight::before,
-.nav-main:focus-within .nav-highlight::before,
-.nav-highlight.is-active::before {
-  background: rgba(255, 255, 255, 0.30);
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.06);
 }
 
 .dark .nav-main:hover .nav-highlight,
 .dark .nav-main:focus-within .nav-highlight,
 .dark .nav-highlight.is-active {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 10px 28px -4px rgba(0, 0, 0, 0.55),
-    0 3px 8px -2px rgba(0, 0, 0, 0.3);
-}
-
-.dark .nav-main:hover .nav-highlight::before,
-.dark .nav-main:focus-within .nav-highlight::before,
-.dark .nav-highlight.is-active::before {
-  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.55);
 }
 
 @media (prefers-reduced-motion: reduce) {

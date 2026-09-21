@@ -170,6 +170,7 @@ const targetLangHref = isEn
       return { left: left, width: width };
     }
 
+    var stretchTimer = null;
     function moveTo(el) {
       if (!el) return;
       var nrect = nav.getBoundingClientRect();
@@ -178,6 +179,28 @@ const targetLangHref = isEn
         return;
       }
       var m = rect(el);
+      var prevLeft = parseFloat(hl.dataset.curLeft || '0');
+      var delta = m.left - prevLeft;
+      var isFirst = !hl.dataset.curLeft;
+      hl.dataset.curLeft = m.left;
+
+      // 物理水滴表面张力拉伸（Squash & Stretch）：横向跳跃时产生水滴拉丝形变，体积守恒
+      if (!isFirst && Math.abs(delta) > 12) {
+        var dir = delta > 0 ? 1 : -1;
+        var stretch = Math.min(1.18, 1 + Math.abs(delta) / 450);
+        var compress = (1 / Math.sqrt(stretch)).toFixed(3);
+        hl.style.setProperty('--hl-scale-x', stretch.toFixed(3));
+        hl.style.setProperty('--hl-scale-y', compress);
+        hl.style.setProperty('--hl-skew', (-dir * 2.8) + 'deg');
+
+        clearTimeout(stretchTimer);
+        stretchTimer = setTimeout(function() {
+          hl.style.setProperty('--hl-scale-x', '1');
+          hl.style.setProperty('--hl-scale-y', '1');
+          hl.style.setProperty('--hl-skew', '0deg');
+        }, 190);
+      }
+
       hl.style.setProperty('--hl-left', m.left + 'px');
       hl.style.setProperty('--hl-width', m.width + 'px');
       hl.style.opacity = '1';
@@ -261,12 +284,25 @@ const targetLangHref = isEn
       });
     }
 
+    nav.addEventListener('mousemove', function(e) {
+      var hrect = hl.getBoundingClientRect();
+      if (hrect.width > 0) {
+        var relX = (e.clientX - hrect.left) / hrect.width;
+        relX = Math.max(0, Math.min(1, relX));
+        hl.style.setProperty('--hl-specular-x', (relX * 100).toFixed(1) + '%');
+      }
+    });
+
     links.forEach(function(a) {
       a.addEventListener('mouseenter', function() { moveTo(a); hl.classList.add('is-active'); });
       a.addEventListener('focus', function() { moveTo(a); hl.classList.add('is-active'); });
       a.addEventListener('touchstart', function() { hl.classList.add('is-active'); }, { passive: true });
     });
-    nav.addEventListener('mouseleave', function() { recalc(); hl.classList.remove('is-active'); });
+    nav.addEventListener('mouseleave', function() {
+      recalc();
+      hl.classList.remove('is-active');
+      hl.style.setProperty('--hl-specular-x', '50%');
+    });
     window.addEventListener('touchend', function() {
       setTimeout(function() { hl.classList.remove('is-active'); }, 400);
     }, { passive: true });

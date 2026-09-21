@@ -171,91 +171,74 @@ html, body {
 }
 
 /* ==========================================================================
-   现代触觉新拟物设计 (Modern Tactile Skeuomorphism / Neumorphism)
+   克制哑光新拟物设计 (Zero-Glare Matte Neumorphism)
    ========================================================================== */
 .neumorphic-btn {
   position: relative;
   border-radius: 9999px;
-  /* 亮色模式：高质感陶瓷/瓷白微凸材质 */
-  background: linear-gradient(180deg, #ffffff 0%, #edf1f6 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #eff2f5;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow:
-    /* 顶部倒角光线折射高光 */
-    inset 0 1px 0 0 rgba(255, 255, 255, 1),
-    /* 底部物理微暗受光面 */
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
-    /* 底座紧致接触阴影 */
-    0 1px 2px 0 rgba(0, 0, 0, 0.06),
-    /* 柔和环境漫反射 */
-    0 3px 6px 0 rgba(0, 0, 0, 0.03);
+    -2px -2px 5px 0 rgba(255, 255, 255, 0.9),
+    2px 2.5px 5px 0 rgba(160, 175, 195, 0.28);
   color: #334155;
   transition:
-    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 160ms ease,
-    background 160ms ease;
+    transform 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 140ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 140ms ease,
+    background 140ms ease;
   user-select: none;
   cursor: pointer;
 }
 
 .dark .neumorphic-btn {
-  /* 暗色模式：深空黑曜石阳极氧化金属 / 物理黑晶质感，绝不产生污浊外圈白晕 */
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), #141416;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /* 严格去除刺眼假白高光，纯净深色阶平光，仅保留极微弱漫反射与自然阴影 */
+  background: #1c1c1f;
+  border: 1px solid rgba(255, 255, 255, 0.04);
   box-shadow:
-    /* 顶部 1px 锐利倒角切面反光（超清高光棱线） */
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
-    /* 底部内嵌实体深色棱 */
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    /* 底部实体贴底接触阴影 */
-    0 1px 2px 0 rgba(0, 0, 0, 0.6),
-    /* 纯净的底部环境纵深（绝不用发虚的外白阴影） */
-    0 4px 10px 0 rgba(0, 0, 0, 0.4);
-  color: #e2e8f0;
+    -1.5px -1.5px 3.5px 0 rgba(255, 255, 255, 0.03),
+    2px 2.5px 5px 0 rgba(0, 0, 0, 0.45);
+  color: #cbd5e1;
 }
 
-/* 悬停状态：晶莹浮凸 */
+/* 悬停微升 */
 .neumorphic-btn:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 100%);
-  border-color: rgba(0, 0, 0, 0.12);
+  background: #f4f7fa;
+  border-color: rgba(255, 255, 255, 0.9);
   box-shadow:
-    inset 0 1px 0 0 #ffffff,
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
-    0 2px 4px 0 rgba(0, 0, 0, 0.08),
-    0 6px 14px 0 rgba(0, 0, 0, 0.05);
+    -2.5px -2.5px 6px 0 #ffffff,
+    2.5px 3px 6px 0 rgba(160, 175, 195, 0.35);
   color: #0f172a;
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
 }
 
 .dark .neumorphic-btn:hover {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%), #18181b;
-  border-color: rgba(255, 255, 255, 0.22);
+  background: #202024;
+  border-color: rgba(255, 255, 255, 0.07);
   box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.38),
-    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
-    0 2px 4px 0 rgba(0, 0, 0, 0.8),
-    0 6px 16px 0 rgba(0, 0, 0, 0.55);
+    -2px -2px 4px 0 rgba(255, 255, 255, 0.04),
+    2px 3px 6px 0 rgba(0, 0, 0, 0.55);
   color: #ffffff;
-  transform: translateY(-1px);
+  transform: translateY(-0.5px);
 }
 
-/* 按压状态：机械阻尼物理下沉与键坑内凹 (Tactile Inset Press) */
+/* 机械微凹按压态 (Soft Inset Pressed) */
 .neumorphic-btn:active {
-  background: #e8ecf2;
-  border-color: rgba(0, 0, 0, 0.1);
+  background: #e6ebf0;
+  border-color: rgba(255, 255, 255, 0.4);
   box-shadow:
-    inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.14),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
-  transform: translateY(1px);
+    inset 1.5px 1.5px 3px 0 rgba(160, 175, 195, 0.35),
+    inset -1.5px -1.5px 3px 0 #ffffff !important;
+  transform: translateY(0.5px);
 }
 
 .dark .neumorphic-btn:active {
-  background: #0f0f11;
-  border-color: rgba(255, 255, 255, 0.06);
+  background: #141416;
+  border-color: rgba(255, 255, 255, 0.02);
   box-shadow:
-    inset 0 2px 4px 0 rgba(0, 0, 0, 0.85),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.4) !important;
-  transform: translateY(1px);
+    inset 1.5px 1.5px 3px 0 rgba(0, 0, 0, 0.6),
+    inset -1px -1px 2px 0 rgba(255, 255, 255, 0.02) !important;
+  transform: translateY(0.5px);
 }
 
 .glass-specular {
