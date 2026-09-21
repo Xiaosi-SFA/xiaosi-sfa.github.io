@@ -2,13 +2,11 @@
 title: 活动后记｜给岁月以文明——《三体》发表二十周年主题沙龙
 date: 2026-09-19
 authors:
-  - name: 云梦泽
-    role: 文稿
-    equalContribution: true
-    corresponding: true
   - name: 柏夜
     role: 排版
-    equalContribution: true
+  - name: 云梦泽
+    role: 文稿
+    corresponding: true
   - name: 夜立淂
     role: 审核
     corresponding: true
