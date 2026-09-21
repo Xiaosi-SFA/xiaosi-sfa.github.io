@@ -175,65 +175,70 @@ html, body {
    ========================================================================== */
 .neumorphic-btn {
   border-radius: 9999px;
-  background: #f1f3f7;
+  background: linear-gradient(135deg, #ffffff 0%, #e9eef6 100%);
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow:
-    -3px -3px 7px 0 #ffffff,
-    3px 3px 7px 0 rgba(166, 178, 196, 0.42),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+    -3px -3px 7px 0 rgba(255, 255, 255, 0.95),
+    3px 3px 8px 0 rgba(162, 175, 198, 0.42),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px 0 rgba(160, 175, 195, 0.15);
   color: #334155;
-  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   user-select: none;
+  cursor: pointer;
 }
 
 .dark .neumorphic-btn {
-  background: #1c1c1f;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: linear-gradient(135deg, #232328 0%, #18181b 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
     -3px -3px 7px 0 rgba(255, 255, 255, 0.06),
-    3px 3px 8px 0 rgba(0, 0, 0, 0.62),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    3px 3px 8px 0 rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
   color: #cbd5e1;
 }
 
+/* 悬停微凸浮雕与光泽质感 */
 .neumorphic-btn:hover {
-  background: #f6f8fb;
+  background: linear-gradient(135deg, #ffffff 0%, #edf2fa 100%);
   border-color: #ffffff;
   box-shadow:
-    -4px -4px 10px 0 #ffffff,
-    4px 4px 12px 0 rgba(150, 168, 195, 0.52),
-    inset 0 0 0 1px #ffffff;
+    -4px -4px 10px 0 rgba(255, 255, 255, 1),
+    4px 4px 12px 0 rgba(148, 163, 188, 0.52),
+    inset 0 1px 1.5px 0 #ffffff;
   color: #0f172a;
   transform: translateY(-1px);
 }
 
 .dark .neumorphic-btn:hover {
-  background: #232328;
-  border-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, #292930 0%, #1c1c20 100%);
+  border-color: rgba(255, 255, 255, 0.14);
   box-shadow:
     -4px -4px 10px 0 rgba(255, 255, 255, 0.09),
     4px 4px 14px 0 rgba(0, 0, 0, 0.82),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18);
   color: #ffffff;
   transform: translateY(-1px);
 }
 
+/* 点击按压凹陷 (Pressed Inset) 拟物触感 */
 .neumorphic-btn:active {
-  background: #e7ecf3;
+  background: linear-gradient(135deg, #e2e8f1 0%, #ecf1f7 100%);
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow:
-    inset 2px 2px 4px 0 rgba(160, 175, 195, 0.6),
-    inset -2px -2px 4px 0 #ffffff !important;
-  transform: translateY(0.5px);
+    inset 3px 3px 6px 0 rgba(150, 165, 185, 0.55),
+    inset -3px -3px 6px 0 rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(0.5px) scale(0.98);
 }
 
 .dark .neumorphic-btn:active {
-  background: #161618;
+  background: linear-gradient(135deg, #151518 0%, #1c1c1f 100%);
   border-color: rgba(255, 255, 255, 0.04);
   box-shadow:
-    inset 2px 2px 5px 0 rgba(0, 0, 0, 0.85),
-    inset -2px -2px 5px 0 rgba(255, 255, 255, 0.05) !important;
-  transform: translateY(0.5px);
+    inset 3px 3px 6px 0 rgba(0, 0, 0, 0.85),
+    inset -3px -3px 6px 0 rgba(255, 255, 255, 0.05) !important;
+  transform: translateY(0.5px) scale(0.98);
 }
 
 .glass-specular {
