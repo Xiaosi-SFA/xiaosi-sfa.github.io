@@ -170,6 +170,72 @@ html, body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
 }
 
+/* ==========================================================================
+   新拟物设计 (Neumorphism / Soft UI) - 页眉与页脚按钮
+   ========================================================================== */
+.neumorphic-btn {
+  border-radius: 9999px;
+  background: #f1f3f7;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    -3px -3px 7px 0 #ffffff,
+    3px 3px 7px 0 rgba(166, 178, 196, 0.42),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: #334155;
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  user-select: none;
+}
+
+.dark .neumorphic-btn {
+  background: #1c1c1f;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    -3px -3px 7px 0 rgba(255, 255, 255, 0.06),
+    3px 3px 8px 0 rgba(0, 0, 0, 0.62),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+}
+
+.neumorphic-btn:hover {
+  background: #f6f8fb;
+  border-color: #ffffff;
+  box-shadow:
+    -4px -4px 10px 0 #ffffff,
+    4px 4px 12px 0 rgba(150, 168, 195, 0.52),
+    inset 0 0 0 1px #ffffff;
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+.dark .neumorphic-btn:hover {
+  background: #232328;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    -4px -4px 10px 0 rgba(255, 255, 255, 0.09),
+    4px 4px 14px 0 rgba(0, 0, 0, 0.82),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.neumorphic-btn:active {
+  background: #e7ecf3;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 2px 2px 4px 0 rgba(160, 175, 195, 0.6),
+    inset -2px -2px 4px 0 #ffffff !important;
+  transform: translateY(0.5px);
+}
+
+.dark .neumorphic-btn:active {
+  background: #161618;
+  border-color: rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 2px 2px 5px 0 rgba(0, 0, 0, 0.85),
+    inset -2px -2px 5px 0 rgba(255, 255, 255, 0.05) !important;
+  transform: translateY(0.5px);
+}
+
 .glass-specular {
   position: relative;
   overflow: hidden;

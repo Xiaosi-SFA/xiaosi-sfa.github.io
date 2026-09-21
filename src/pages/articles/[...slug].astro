@@ -39,19 +39,25 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
         <img src={withBase(entry.data.cover)} alt={entry.data.title} class="mb-6 w-full rounded-2xl object-cover shadow-sm border border-slate-200/60 dark:border-white/10" style="aspect-ratio: 16 / 9;" />
       ) : null}
       <h1 class="text-3xl font-extrabold tracking-tight leading-tight md:text-4xl text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
-      <div class="mt-3 pb-6 border-b border-black/[0.06] dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400">
-        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <time datetime={entry.data.date?.toISOString()}>
-            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
-          </time>
-          <span>·</span>
+
+      {(entry.data.author || entry.data.authors) && (
+        <div class="mt-3.5 flex items-center text-sm">
           <AuthorList author={entry.data.author} authors={entry.data.authors} />
         </div>
-        <div class="hidden sm:flex tag-list">
-          {entry.data.tags?.map((t: string) => (
-            <a href={withBase(`/tags/${encodeURIComponent(t)}/`)} class="tag tag--article hash">#{t}</a>
-          ))}
-        </div>
+      )}
+
+      {/* 日期与标签放在同一行 */}
+      <div class="mt-3 pb-6 border-b border-black/[0.06] dark:border-white/[0.08] flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400">
+        <time datetime={entry.data.date?.toISOString()}>
+          {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+        </time>
+        {entry.data.tags && entry.data.tags.length > 0 && (
+          <div class="flex tag-list flex-wrap gap-1.5">
+            {entry.data.tags.map((t: string) => (
+              <a href={withBase(`/tags/${encodeURIComponent(t)}/`)} class="tag tag--article hash whitespace-nowrap">#{t}</a>
+            ))}
+          </div>
+        )}
       </div>
       <div class="pt-6">
         <MarkdownContent Content={Content} indent={paraIndent} align={entry.data?.align} />
