@@ -1,11 +1,14 @@
 ---
+import { getI18n } from '@utils/i18n'
+
 interface Heading { depth: number; text: string; slug: string }
 interface Props { headings?: Heading[] }
 const { headings = [] } = Astro.props as Props
+const { t } = getI18n(Astro.url)
 ---
 {headings.length ? (
   <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] rounded-2xl p-5 shadow-xs">
-    <div class="text-sm font-bold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">目录</div>
+    <div class="text-sm font-bold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">{t('actions.toc', '目录')}</div>
     <ul class="space-y-1.5">
       {headings.map((h) => (
         <li

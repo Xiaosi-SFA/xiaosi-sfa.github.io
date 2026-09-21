@@ -54,7 +54,7 @@ articles.forEach((item) => {
   }
 })
 ---
-<BaseLayout title="文章 - SFA">
+<BaseLayout title={`${t('articles.title', '文章')} - SFA`}>
   <section class="space-y-12">
 
     {SECTION_META.map(({ slugPrefix, title, link, linkLabel }) => {
