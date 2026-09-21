@@ -171,74 +171,91 @@ html, body {
 }
 
 /* ==========================================================================
-   新拟物设计 (Neumorphism / Soft UI) - 页眉与页脚按钮
+   现代触觉新拟物设计 (Modern Tactile Skeuomorphism / Neumorphism)
    ========================================================================== */
 .neumorphic-btn {
+  position: relative;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #ffffff 0%, #e9eef6 100%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  /* 亮色模式：高质感陶瓷/瓷白微凸材质 */
+  background: linear-gradient(180deg, #ffffff 0%, #edf1f6 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow:
-    -3px -3px 7px 0 rgba(255, 255, 255, 0.95),
-    3px 3px 8px 0 rgba(162, 175, 198, 0.42),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 1px 0 rgba(160, 175, 195, 0.15);
+    /* 顶部倒角光线折射高光 */
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    /* 底部物理微暗受光面 */
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
+    /* 底座紧致接触阴影 */
+    0 1px 2px 0 rgba(0, 0, 0, 0.06),
+    /* 柔和环境漫反射 */
+    0 3px 6px 0 rgba(0, 0, 0, 0.03);
   color: #334155;
-  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition:
+    transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 160ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 160ms ease,
+    background 160ms ease;
   user-select: none;
   cursor: pointer;
 }
 
 .dark .neumorphic-btn {
-  background: linear-gradient(135deg, #232328 0%, #18181b 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* 暗色模式：深空黑曜石阳极氧化金属 / 物理黑晶质感，绝不产生污浊外圈白晕 */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), #141416;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow:
-    -3px -3px 7px 0 rgba(255, 255, 255, 0.06),
-    3px 3px 8px 0 rgba(0, 0, 0, 0.65),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
-  color: #cbd5e1;
+    /* 顶部 1px 锐利倒角切面反光（超清高光棱线） */
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+    /* 底部内嵌实体深色棱 */
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    /* 底部实体贴底接触阴影 */
+    0 1px 2px 0 rgba(0, 0, 0, 0.6),
+    /* 纯净的底部环境纵深（绝不用发虚的外白阴影） */
+    0 4px 10px 0 rgba(0, 0, 0, 0.4);
+  color: #e2e8f0;
 }
 
-/* 悬停微凸浮雕与光泽质感 */
+/* 悬停状态：晶莹浮凸 */
 .neumorphic-btn:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #edf2fa 100%);
-  border-color: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f8fc 100%);
+  border-color: rgba(0, 0, 0, 0.12);
   box-shadow:
-    -4px -4px 10px 0 rgba(255, 255, 255, 1),
-    4px 4px 12px 0 rgba(148, 163, 188, 0.52),
-    inset 0 1px 1.5px 0 #ffffff;
+    inset 0 1px 0 0 #ffffff,
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.04),
+    0 2px 4px 0 rgba(0, 0, 0, 0.08),
+    0 6px 14px 0 rgba(0, 0, 0, 0.05);
   color: #0f172a;
   transform: translateY(-1px);
 }
 
 .dark .neumorphic-btn:hover {
-  background: linear-gradient(135deg, #292930 0%, #1c1c20 100%);
-  border-color: rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%), #18181b;
+  border-color: rgba(255, 255, 255, 0.22);
   box-shadow:
-    -4px -4px 10px 0 rgba(255, 255, 255, 0.09),
-    4px 4px 14px 0 rgba(0, 0, 0, 0.82),
-    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18);
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    0 2px 4px 0 rgba(0, 0, 0, 0.8),
+    0 6px 16px 0 rgba(0, 0, 0, 0.55);
   color: #ffffff;
   transform: translateY(-1px);
 }
 
-/* 点击按压凹陷 (Pressed Inset) 拟物触感 */
+/* 按压状态：机械阻尼物理下沉与键坑内凹 (Tactile Inset Press) */
 .neumorphic-btn:active {
-  background: linear-gradient(135deg, #e2e8f1 0%, #ecf1f7 100%);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #e8ecf2;
+  border-color: rgba(0, 0, 0, 0.1);
   box-shadow:
-    inset 3px 3px 6px 0 rgba(150, 165, 185, 0.55),
-    inset -3px -3px 6px 0 rgba(255, 255, 255, 0.95) !important;
-  transform: translateY(0.5px) scale(0.98);
+    inset 0 1.5px 3px 0 rgba(0, 0, 0, 0.14),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.04) !important;
+  transform: translateY(1px);
 }
 
 .dark .neumorphic-btn:active {
-  background: linear-gradient(135deg, #151518 0%, #1c1c1f 100%);
-  border-color: rgba(255, 255, 255, 0.04);
+  background: #0f0f11;
+  border-color: rgba(255, 255, 255, 0.06);
   box-shadow:
-    inset 3px 3px 6px 0 rgba(0, 0, 0, 0.85),
-    inset -3px -3px 6px 0 rgba(255, 255, 255, 0.05) !important;
-  transform: translateY(0.5px) scale(0.98);
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.85),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(1px);
 }
 
 .glass-specular {
