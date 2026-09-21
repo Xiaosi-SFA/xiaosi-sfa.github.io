@@ -195,12 +195,10 @@ html, body {
 }
 
 .dark .neumorphic-btn {
-  /* 严格去除刺眼假白高光，纯净深色阶平光，仅保留极微弱漫反射与自然阴影 */
-  background: #1c1c1f;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow:
-    -1.5px -1.5px 3.5px 0 rgba(255, 255, 255, 0.03),
-    2px 2.5px 5px 0 rgba(0, 0, 0, 0.45);
+  /* 深色模式：颜色与背景完全一致，仅使用克制的极细描边凸显层级关系 */
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
   color: #cbd5e1;
 }
 
@@ -217,11 +215,9 @@ html, body {
 }
 
 .dark .neumorphic-btn:hover {
-  background: #202024;
-  border-color: rgba(255, 255, 255, 0.07);
-  box-shadow:
-    -2px -2px 4px 0 rgba(255, 255, 255, 0.04),
-    2px 3px 6px 0 rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: none;
   color: #ffffff;
   transform: translateY(-0.5px);
 }
@@ -237,11 +233,9 @@ html, body {
 }
 
 .dark .neumorphic-btn:active {
-  background: #141416;
-  border-color: rgba(255, 255, 255, 0.02);
-  box-shadow:
-    inset 1.5px 1.5px 3px 0 rgba(0, 0, 0, 0.6),
-    inset -1px -1px 2px 0 rgba(255, 255, 255, 0.02) !important;
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none !important;
   transform: translateY(0.5px);
 }
 
