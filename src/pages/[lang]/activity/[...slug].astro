@@ -8,20 +8,40 @@ import BackToTopOrb from '@components/BackToTopOrb.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
 import AuthorList from '@components/AuthorList.astro'
 import { withBase } from '@utils/path'
+import { getI18n } from '@utils/i18n'
 
 export async function getStaticPaths() {
-  const activities = (await (getCollection as any)('activity')).filter((e: any) => e.slug.includes('/') && !e.slug.startsWith('en/'))
-  return activities.map((entry: any) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }))
+  const activities: any[] = await (getCollection as any)('activity')
+  const paths: any[] = []
+
+  // English versions
+  const enActivities = activities.filter((e) => e.slug.startsWith('en/'))
+  for (const entry of enActivities) {
+    const cleanSlug = entry.slug.replace(/^en\//, '')
+    paths.push({
+      params: { lang: 'en', slug: cleanSlug },
+      props: { entry },
+    })
+  }
+
+  // Chinese versions under /zh-cn/
+  const zhActivities = activities.filter((e) => !e.slug.startsWith('en/'))
+  for (const entry of zhActivities) {
+    paths.push({
+      params: { lang: 'zh-cn', slug: entry.slug },
+      props: { entry },
+    })
+  }
+
+  return paths
 }
 
 const { entry } = Astro.props as { entry: any }
 const { Content, headings } = await entry.render()
 const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
+const { t, isEn, localePrefix } = getI18n(Astro.url)
 ---
-<BaseLayout title={`${entry.data.title} - 活动 - SFA`}>
+<BaseLayout title={`${entry.data.title} - ${t('activity.title', '活动')} - SFA`}>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start md:items-stretch">
     <div class="order-2 md:order-1 md:col-span-1 md:self-stretch">
       <div class="space-y-4 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto">
@@ -30,7 +50,7 @@ const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
             <TOC headings={headings} />
           </div>
         ) : null}
-        <RelatedActivity currentSlug={entry.slug} tags={entry.data.tags} />
+        <RelatedActivity currentSlug={entry.slug.replace(/^en\//, '')} tags={entry.data.tags} />
       </div>
     </div>
     <article class="order-1 md:order-2 md:col-span-2 max-w-none p-6 sm:p-8 md:p-10 rounded-2xl bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] shadow-xs">
@@ -45,18 +65,18 @@ const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
         </div>
       )}
 
-      {/* 日期，地点，tag列表放在同一行 */}
+      {/* Date, Location, Tags */}
       <div class="mt-3 pb-6 border-b border-black/[0.06] dark:border-white/[0.08] flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400">
         <div class="flex items-center gap-2">
           <time datetime={entry.data.date?.toISOString()}>
-            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+            {new Date(entry.data.date).toLocaleDateString(isEn ? 'en-US' : 'zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
           </time>
           {entry.data.location ? <span>· {entry.data.location}</span> : ''}
         </div>
         {entry.data.tags && entry.data.tags.length > 0 && (
           <div class="flex tag-list flex-wrap gap-1.5">
-            {entry.data.tags.map((t: string) => (
-              <a href={withBase(`/tags/${encodeURIComponent(t)}/`)} class="tag tag--article hash whitespace-nowrap">#{t}</a>
+            {entry.data.tags.map((tg: string) => (
+              <a href={withBase(`${localePrefix}/tags/${encodeURIComponent(tg)}/`)} class="tag tag--article hash whitespace-nowrap">#{tg}</a>
             ))}
           </div>
         )}

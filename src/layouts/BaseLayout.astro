@@ -11,56 +11,22 @@ import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import "@styles/global.css";
 import { withBase } from "@utils/path";
+import { getI18n } from "@utils/i18n";
+
 const {
-  title = "四川大学科幻协会",
-  description = "社团官网与文章活动归档",
+  title: rawTitle,
+  description: rawDesc,
   hideHeaderFooter = false,
   disableWaveBg = false,
 } = Astro.props as Props;
 
-// i18n: load *.lang files (flat key=value), determine locale from URL prefix
-const langFiles = import.meta.glob('../content/lang/*.lang', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-function parseLang(raw: string) {
-  const map: Record<string, string> = {};
-  if (!raw) return map;
-  raw.split(/\r?\n/).forEach((line) => {
-    const s = line.trim();
-    if (!s || s.startsWith('#') || s.startsWith('//')) return;
-    const eq = s.indexOf('=');
-    if (eq === -1) return;
-    const k = s.slice(0, eq).trim();
-    const v = s.slice(eq + 1).trim();
-    if (k) map[k] = v;
-  });
-  return map;
-}
-
-const base = import.meta.env.BASE_URL || '/';
-const cleanBase = base.endsWith('/') ? base : `${base}/`;
-const pathRaw = Astro.url.pathname;
-const pathNoBase = (cleanBase !== '/' && pathRaw.startsWith(cleanBase))
-  ? '/' + pathRaw.slice(cleanBase.length)
-  : pathRaw;
-
-const m = pathNoBase.match(/^\/(?<lc>[a-z]{2}(?:-[a-z]{2})?)(?:\/|$)/i);
-const currentLocale = (m?.groups?.lc || 'zh-cn').toLowerCase();
-const localePrefix = m?.groups?.lc ? `/${currentLocale}` : '';
-function loadLocale(code: string) {
-  const entry = Object.entries(langFiles).find(([p]) => p.toLowerCase().endsWith(`/lang/${code}.lang`));
-  return parseLang(entry ? entry[1] : '');
-}
-const M_CUR = loadLocale(currentLocale);
-const M_EN = loadLocale('en');
-function t(key: string, fallback?: string) {
-  return M_CUR[key] ?? M_EN[key] ?? fallback ?? key;
-}
-
-const pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-const isHomeNormalized = pathNoLocale === '/';
+const { currentLocale, isEn, localePrefix, pathNoLocale, isHomeNormalized, t } = getI18n(Astro.url);
+const title = rawTitle ? (rawTitle === "四川大学科幻协会" ? t('site.orgName', '四川大学科幻协会') : rawTitle) : t('site.orgName', '四川大学科幻协会');
+const description = rawDesc ? (rawDesc === "社团官网与文章活动归档" ? t('site.description', '社团官网与消息门户') : rawDesc) : t('site.description', '社团官网与消息门户');
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang={isEn ? "en" : "zh-CN"}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -2,8 +2,11 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import DeptCard from '@components/DeptCard.astro'
 import { getCollection } from 'astro:content'
+import { getI18n } from '@utils/i18n'
 import '@styles/about.css'
 import MarkdownContent from '@components/MarkdownContent.astro'
+
+const { t } = getI18n(Astro.url)
 
 const aboutEntry = (await (getCollection as any)('about')).find((x: any) => x.slug === 'index')
 const { Content } = aboutEntry ? await aboutEntry.render() : { Content: null }
@@ -12,18 +15,18 @@ const departments = (await getCollection('departments')).sort(
   (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999)
 )
 ---
-<BaseLayout title="关于我们 - SFA">
+<BaseLayout title={`${t('about.title', '关于我们')} - SFA`}>
   <div class="max-w-4xl mx-auto py-6">
     <section class="space-y-8">
       <header class="pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{aboutEntry?.data.title ?? '关于我们'}</h1>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{aboutEntry?.data.title ?? t('about.title', '关于我们')}</h1>
       </header>
 
       {Content ? (
         <MarkdownContent Content={Content} variant="about" align={aboutEntry?.data?.align} />
       ) : null}
       <section class="space-y-4">
-        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">部门</h2>
+        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{t('about.departments', '部门')}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 dept-grid">
           {departments.map((d) => (
             <DeptCard title={d.data.title} summary={d.data.summary ?? ''} href={`/about/departments/${d.slug}/`} />

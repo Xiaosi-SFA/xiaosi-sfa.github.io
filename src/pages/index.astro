@@ -4,7 +4,10 @@ import { getCollection } from 'astro:content'
 import PostCard from '@components/PostCard.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import { withBase } from '@utils/path'
+import { getI18n } from '@utils/i18n'
 import '@styles/homepage.css'
+
+const { t, localePrefix } = getI18n(Astro.url)
 
 const latestArticles = (await (getCollection as any)('articles'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
@@ -15,7 +18,7 @@ const latestActivity = (await (getCollection as any)('activity'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 3)
 ---
-<BaseLayout title="四川大学科幻协会">
+<BaseLayout title={t('site.orgName', '四川大学科幻协会')}>
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">
       <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full flex items-center justify-center">
@@ -23,15 +26,15 @@ const latestActivity = (await (getCollection as any)('activity'))
         <img src={withBase('/xiaosi-white.png')} alt="SFA logo night" class="w-auto h-40 sm:h-48 md:h-56 object-contain hidden dark:block" />
       </div>
 
-      <h1 id="welcomeText" class="welcome-text text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 text-slate-900 dark:text-slate-100">欢迎来到小四的机密档案室</h1>
+      <h1 id="welcomeText" class="welcome-text text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 text-slate-900 dark:text-slate-100">{t('home.welcome', '欢迎来到小四的机密档案室')}</h1>
 
       <div class="welcome-actions mt-8 flex items-center justify-center gap-4">
-        <a href="#latest-articles" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-md transition-all duration-300 hover:scale-105">文章</a>
-        <a href="#latest-activity" class="px-6 py-2.5 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">活动</a>
+        <a href="#latest-articles" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-md transition-all duration-300 hover:scale-105">{t('home.articles', '文章')}</a>
+        <a href="#latest-activity" class="px-6 py-2.5 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">{t('home.activity', '活动')}</a>
       </div>
 
       <div class="w-full flex flex-col items-center justify-center mt-20">
-        <button aria-label="查看内容" class="arrow-wrap bg-transparent border-0 cursor-pointer w-14 h-14 p-0 m-0 flex items-center justify-center">
+        <button aria-label={t('actions.viewContent', '查看内容')} class="arrow-wrap bg-transparent border-0 cursor-pointer w-14 h-14 p-0 m-0 flex items-center justify-center">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-bounce-up w-10 h-10 block text-slate-900 dark:text-slate-100" aria-hidden="true">
             <path d="M12 6 L6 12 H18 L12 6 Z" fill="currentColor" />
           </svg>
@@ -177,9 +180,9 @@ const latestActivity = (await (getCollection as any)('activity'))
   <section id="latest-articles" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06]">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">文章</h2>
-        <a href={withBase('/articles/')} class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
-          全部
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('home.articles', '文章')}</h2>
+        <a href={withBase(`${localePrefix}/articles/`)} class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
+          {t('home.viewAll', '全部')}
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -194,9 +197,9 @@ const latestActivity = (await (getCollection as any)('activity'))
   <section id="latest-activity" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06]">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">活动</h2>
-        <a href={withBase('/activity/')} class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
-          全部
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{t('home.activity', '活动')}</h2>
+        <a href={withBase(`${localePrefix}/activity/`)} class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
+          {t('home.viewAll', '全部')}
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>

@@ -1,13 +1,76 @@
 # English translations
+
 nav.home=Home
 nav.articles=Articles
 nav.activity=Activities
-nav.events=Events
+nav.events=Activities
 nav.about=About
 nav.groups=Groups
 nav.links=Links
 
 site.title=SFA Archives
 site.description=Club website and news portal
+site.orgName=Sichuan University Science Fiction Association
+site.repoAria=GitHub Repository
+site.viewAll=All
 
 actions.toggleTheme=Toggle theme
+actions.viewContent=View content
+actions.backToTop=Back to top
+actions.toc=Table of Contents
+actions.close=Close
+
+home.welcome=Welcome to SFA Confidential Archives
+home.articles=Articles
+home.activity=Activities
+home.viewAll=All
+
+articles.title=Articles
+articles.desc=Club articles archive, creations and reviews
+articles.all=All Articles
+articles.classics=Classics
+articles.contributions=Submissions
+articles.essays=Essays
+articles.reviews=Reviews
+articles.filterAll=All
+articles.noArticles=No articles yet
+articles.readMore=Read more
+articles.related=Related Articles
+articles.publishedAt=Published at
+articles.authors=Authors
+
+activity.title=Activities
+activity.desc=Club events and activity archives
+activity.all=All Activities
+activity.noActivities=No activities yet
+activity.related=Related Activities
+activity.date=Date
+
+about.title=About Us
+about.departments=Departments
+about.gallery=Gallery
+about.noGallery=No gallery items yet.
+about.noActivity=No activities related to this department yet.
+about.members=Members
+about.roleMinister=Minister
+about.roleViceMinister=Vice Minister
+about.roleMember=Member
+
+groups.title=Interest Groups
+groups.desc=Various science fiction and cultural interest groups within the club
+groups.recentActivities=Recent Activities
+groups.noActivities=No recent activities
+
+links.title=Links
+links.desc=Partner sites related to science fiction, university clubs, and culture
+links.apply=Apply for Link
+
+tags.title=Tags
+tags.all=All Tags
+tags.taggedWith=Articles tagged with
+tags.noArticles=No articles found with this tag
+
+notFound.title=Page Not Found
+notFound.desc=Sorry, the page you visited does not exist or has been removed.
+notFound.backHome=Back to Home
+notFound.viewActivities=Browse Activities

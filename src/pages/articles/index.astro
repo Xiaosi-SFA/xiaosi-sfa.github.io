@@ -3,32 +3,35 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import PostCard from '@components/PostCard.astro'
 import SectionHeader from '@components/SectionHeader.astro'
+import { getI18n } from '@utils/i18n'
 import '@styles/articles.css'
+
+const { t, localePrefix } = getI18n(Astro.url)
 
 const SECTION_META = [
   {
     slugPrefix: 'contributions',
-    title: '投稿',
-    link: '/articles/contributions/',
-    linkLabel: '更多',
+    title: t('articles.contributions', '征文'),
+    link: `${localePrefix}/articles/contributions/`,
+    linkLabel: t('site.viewAll', '更多'),
   },
   {
     slugPrefix: 'essays',
-    title: '杂谈',
-    link: '/articles/essays/',
-    linkLabel: '更多',
+    title: t('articles.essays', '随笔'),
+    link: `${localePrefix}/articles/essays/`,
+    linkLabel: t('site.viewAll', '更多'),
   },
   {
     slugPrefix: 'reviews',
-    title: '影评 / 书评',
-    link: '/articles/reviews/',
-    linkLabel: '更多',
+    title: t('articles.reviews', '评论'),
+    link: `${localePrefix}/articles/reviews/`,
+    linkLabel: t('site.viewAll', '更多'),
   },
   {
     slugPrefix: 'classics',
-    title: '诗歌 / 古文',
-    link: '/articles/classics/',
-    linkLabel: '更多',
+    title: t('articles.classics', '名篇'),
+    link: `${localePrefix}/articles/classics/`,
+    linkLabel: t('site.viewAll', '更多'),
   },
 ] as const
 
