@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "ship": "node scripts/deploy.mjs",
     "release": "node scripts/deploy.mjs",
     "site:deploy": "node scripts/deploy.mjs",

@@ -28,7 +28,6 @@ const targetLangHref = isEn
 ---
 <header
   class="site-header border-b border-black/[0.06] dark:border-white/[0.08] bg-white/75 dark:bg-[#161617]/75 backdrop-blur-xl sticky top-0 z-30 transition-all duration-300"
-  transition:persist="site-header"
 >
   <nav class="nav-main mx-auto max-w-6xl px-4 py-2.5 flex items-center gap-[var(--nav-inline-gap)]">
     <span class="nav-highlight" aria-hidden="true"></span>
@@ -121,244 +120,211 @@ const targetLangHref = isEn
 
 <script is:inline define:vars={{ baseUrl: import.meta.env.BASE_URL || '/' }}>
   (function() {
-    if (window.__sfa_header_init__) return;
-    window.__sfa_header_init__ = true;
+    function initHeader() {
+      var header = document.querySelector('.site-header');
+      var nav = document.querySelector('.site-header .nav-main');
+      var btn = document.getElementById('theme-toggle');
+      if (!header || !nav) return;
 
-    var header = document.querySelector('.site-header');
-    var nav = document.querySelector('.site-header .nav-main');
-    var btn = document.getElementById('theme-toggle');
-    if (!header || !nav) return;
-
-    var links = Array.from(nav.querySelectorAll('.nav-link'));
-    var hl = nav.querySelector('.nav-highlight');
-    if (!hl) {
-      hl = document.createElement('span');
-      hl.className = 'nav-highlight';
-      hl.setAttribute('aria-hidden', 'true');
-      nav.prepend(hl);
-    }
-    nav.classList.add('has-navhl');
-
-    var lastY = window.scrollY || 0;
-    var ticking = false;
-
-    function isMobile() {
-      return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
-    }
-
-    function normalizePath(p) {
-      try { var u = new URL(p, window.location.origin); p = u.pathname; } catch(e){}
-      p = p || '/';
-      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-      if (cleanBase !== '/' && p.indexOf(cleanBase) === 0) {
-        p = '/' + p.slice(cleanBase.length);
+      var links = Array.from(nav.querySelectorAll('.nav-link'));
+      var hl = nav.querySelector('.nav-highlight');
+      if (!hl) {
+        hl = document.createElement('span');
+        hl.className = 'nav-highlight';
+        hl.setAttribute('aria-hidden', 'true');
+        nav.prepend(hl);
       }
-      p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-      if (!p.endsWith('/')) p += '/';
-      return p;
-    }
+      nav.classList.add('has-navhl');
 
-    function rect(el) {
-      var left = 0, width = 0;
-      try { left = el.offsetLeft; width = el.offsetWidth; }
-      catch(e) {
-        var r = el.getBoundingClientRect();
-        var n = nav.getBoundingClientRect();
-        left = r.left - n.left + nav.scrollLeft;
-        width = r.width;
-      }
-      return { left: left, width: width };
-    }
+      var lastY = window.scrollY || 0;
+      var ticking = false;
 
-    var stretchTimer = null;
-    function moveTo(el) {
-      if (!el) return;
-      var nrect = nav.getBoundingClientRect();
-      if (!nrect || nrect.width === 0 || nrect.height === 0) {
-        requestAnimationFrame(function(){ moveTo(el); });
-        return;
-      }
-      var m = rect(el);
-      var prevLeft = parseFloat(hl.dataset.curLeft || '0');
-      var delta = m.left - prevLeft;
-      var isFirst = !hl.dataset.curLeft;
-      hl.dataset.curLeft = m.left;
-
-      // 物理水滴表面张力拉伸（Squash & Stretch）：横向跳跃时产生水滴拉丝形变，体积守恒
-      if (!isFirst && Math.abs(delta) > 12) {
-        var dir = delta > 0 ? 1 : -1;
-        var stretch = Math.min(1.18, 1 + Math.abs(delta) / 450);
-        var compress = (1 / Math.sqrt(stretch)).toFixed(3);
-        hl.style.setProperty('--hl-scale-x', stretch.toFixed(3));
-        hl.style.setProperty('--hl-scale-y', compress);
-        hl.style.setProperty('--hl-skew', (-dir * 2.8) + 'deg');
-
-        clearTimeout(stretchTimer);
-        stretchTimer = setTimeout(function() {
-          hl.style.setProperty('--hl-scale-x', '1');
-          hl.style.setProperty('--hl-scale-y', '1');
-          hl.style.setProperty('--hl-skew', '0deg');
-        }, 190);
+      function isMobile() {
+        return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
       }
 
-      hl.style.setProperty('--hl-left', m.left + 'px');
-      hl.style.setProperty('--hl-width', m.width + 'px');
-      hl.style.opacity = '1';
-    }
-
-    function current() {
-      return nav.querySelector('.nav-link.is-active') || links[0];
-    }
-
-    function recalc() {
-      moveTo(current());
-    }
-
-    function scrollActiveIntoView(behavior) {
-      if (!isMobile()) return;
-      var a = current(); if (!a) return;
-      var nrect = nav.getBoundingClientRect();
-      if (!nrect || nrect.width === 0 || nrect.height === 0) return;
-      var arect = a.getBoundingClientRect();
-      var leftWithinNav = arect.left - nrect.left;
-      var currentLeft = nav.scrollLeft + leftWithinNav;
-      var target = currentLeft - (nrect.width - arect.width) / 2;
-      var maxScroll = nav.scrollWidth - nav.clientWidth; if (maxScroll < 0) maxScroll = 0;
-      var next = Math.max(0, Math.min(target, maxScroll));
-      try { nav.scrollTo({ left: next, behavior: behavior || 'auto' }); }
-      catch (e) { nav.scrollLeft = next; }
-    }
-
-    function setActiveByURL() {
-      var cur = normalizePath(window.location.pathname);
-      var best = { a: null, len: -1 };
-      links.forEach(function(a){
-        var href = a.getAttribute('href') || '/';
-        var base = normalizePath(href);
-        if (base === '/' && cur === '/') {
-          if (base.length > best.len) best = { a: a, len: base.length }; return;
+      function normalizePath(p) {
+        try { var u = new URL(p, window.location.origin); p = u.pathname; } catch(e){}
+        p = p || '/';
+        var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+        if (cleanBase !== '/' && p.indexOf(cleanBase) === 0) {
+          p = '/' + p.slice(cleanBase.length);
         }
-        if (base !== '/' && cur.indexOf(base) === 0) {
-          if (base.length > best.len) best = { a: a, len: base.length };
-        }
-      });
-      links.forEach(function(a){ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
-      if (best.a) { best.a.classList.add('is-active'); best.a.setAttribute('aria-current', 'page'); }
-    }
-
-    function updateLangToggle() {
-      var lang = document.getElementById('lang-toggle');
-      if (!lang) return;
-      var curPath = window.location.pathname;
-      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-      var pathNoBase = (cleanBase !== '/' && curPath.indexOf(cleanBase) === 0)
-        ? '/' + curPath.slice(cleanBase.length)
-        : curPath;
-      var isEn = /^\/en(?:\/|$)/i.test(pathNoBase);
-      var pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-      if (!pathNoLocale.startsWith('/')) pathNoLocale = '/' + pathNoLocale;
-
-      var targetPath = isEn ? pathNoLocale : ('/en' + (pathNoLocale === '/' ? '/' : pathNoLocale));
-      var targetHref = (cleanBase !== '/' ? cleanBase.replace(/\/$/, '') : '') + targetPath;
-
-      lang.setAttribute('href', targetHref);
-      lang.setAttribute('title', isEn ? '切换为中文 (Switch to Chinese)' : 'Switch to English');
-      lang.setAttribute('aria-label', isEn ? '切换为中文' : 'Switch to English');
-      var labelEl = lang.querySelector('[data-lang-label]');
-      if (labelEl) labelEl.textContent = isEn ? '中' : 'EN';
-    }
-
-    function setPressed() {
-      var tBtn = document.getElementById('theme-toggle');
-      if (!tBtn) return;
-      var isDark = document.documentElement.classList.contains('dark');
-      tBtn.setAttribute('aria-pressed', String(isDark));
-    }
-
-    if (btn) {
-      btn.addEventListener('click', function() {
-        var d = document.documentElement;
-        var isDark = d.classList.toggle('dark');
-        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-        setPressed();
-      });
-    }
-
-    nav.addEventListener('mousemove', function(e) {
-      var hrect = hl.getBoundingClientRect();
-      if (hrect.width > 0) {
-        var relX = (e.clientX - hrect.left) / hrect.width;
-        relX = Math.max(0, Math.min(1, relX));
-        hl.style.setProperty('--hl-specular-x', (relX * 100).toFixed(1) + '%');
+        p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+        if (!p.endsWith('/')) p += '/';
+        return p;
       }
-    });
 
-    links.forEach(function(a) {
-      a.addEventListener('mouseenter', function() { moveTo(a); hl.classList.add('is-active'); });
-      a.addEventListener('focus', function() { moveTo(a); hl.classList.add('is-active'); });
-      a.addEventListener('touchstart', function() { hl.classList.add('is-active'); }, { passive: true });
-    });
-    nav.addEventListener('mouseleave', function() {
-      recalc();
-      hl.classList.remove('is-active');
-      hl.style.setProperty('--hl-specular-x', '50%');
-    });
-    window.addEventListener('touchend', function() {
-      setTimeout(function() { hl.classList.remove('is-active'); }, 400);
-    }, { passive: true });
-    nav.addEventListener('scroll', recalc, { passive: true });
-    window.addEventListener('resize', function(){ recalc(); scrollActiveIntoView('auto'); });
-    window.addEventListener('popstate', function(){ setActiveByURL(); updateLangToggle(); recalc(); scrollActiveIntoView('smooth'); });
+      function rect(el) {
+        var left = 0, width = 0;
+        try { left = el.offsetLeft; width = el.offsetWidth; }
+        catch(e) {
+          var r = el.getBoundingClientRect();
+          var n = nav.getBoundingClientRect();
+          left = r.left - n.left + nav.scrollLeft;
+          width = r.width;
+        }
+        return { left: left, width: width };
+      }
 
-    try {
-      var body = document.body;
-      var mo = new MutationObserver(function(muts){
-        for (var i=0;i<muts.length;i++) {
-          var m = muts[i];
-          if (m.attributeName === 'class' && !body.classList.contains('hide-header-footer')) {
-            recalc(); scrollActiveIntoView('auto'); break;
+      var stretchTimer = null;
+      function moveTo(el) {
+        if (!el) return;
+        var nrect = nav.getBoundingClientRect();
+        if (!nrect || nrect.width === 0 || nrect.height === 0) {
+          requestAnimationFrame(function(){ moveTo(el); });
+          return;
+        }
+        var m = rect(el);
+        var prevLeft = parseFloat(hl.dataset.curLeft || '0');
+        var delta = m.left - prevLeft;
+        var isFirst = !hl.dataset.curLeft;
+        hl.dataset.curLeft = m.left;
+
+        if (!isFirst && Math.abs(delta) > 12) {
+          var dir = delta > 0 ? 1 : -1;
+          var stretch = Math.min(1.18, 1 + Math.abs(delta) / 450);
+          var compress = (1 / Math.sqrt(stretch)).toFixed(3);
+          hl.style.setProperty('--hl-scale-x', stretch.toFixed(3));
+          hl.style.setProperty('--hl-scale-y', compress);
+          hl.style.setProperty('--hl-skew', (-dir * 2.8) + 'deg');
+
+          clearTimeout(stretchTimer);
+          stretchTimer = setTimeout(function() {
+            hl.style.setProperty('--hl-scale-x', '1');
+            hl.style.setProperty('--hl-scale-y', '1');
+            hl.style.setProperty('--hl-skew', '0deg');
+          }, 190);
+        }
+
+        hl.style.setProperty('--hl-left', m.left + 'px');
+        hl.style.setProperty('--hl-width', m.width + 'px');
+        hl.style.opacity = '1';
+      }
+
+      function current() {
+        return nav.querySelector('.nav-link.is-active') || links[0];
+      }
+
+      function recalc() {
+        moveTo(current());
+      }
+
+      function scrollActiveIntoView(behavior) {
+        if (!isMobile()) return;
+        var a = current(); if (!a) return;
+        var nrect = nav.getBoundingClientRect();
+        if (!nrect || nrect.width === 0 || nrect.height === 0) return;
+        var arect = a.getBoundingClientRect();
+        var leftWithinNav = arect.left - nrect.left;
+        var currentLeft = nav.scrollLeft + leftWithinNav;
+        var target = currentLeft - (nrect.width - arect.width) / 2;
+        var maxScroll = nav.scrollWidth - nav.clientWidth; if (maxScroll < 0) maxScroll = 0;
+        var next = Math.max(0, Math.min(target, maxScroll));
+        try { nav.scrollTo({ left: next, behavior: behavior || 'auto' }); }
+        catch (e) { nav.scrollLeft = next; }
+      }
+
+      function setActiveByURL() {
+        var cur = normalizePath(window.location.pathname);
+        var best = { a: null, len: -1 };
+        links.forEach(function(a){
+          var href = a.getAttribute('href') || '/';
+          var base = normalizePath(href);
+          if (base === '/' && cur === '/') {
+            if (base.length > best.len) best = { a: a, len: base.length }; return;
           }
-        }
-      });
-      mo.observe(body, { attributes: true, attributeFilter: ['class'] });
-    } catch (e) {}
-
-    try {
-      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function(){ recalc(); }); }
-      if (window.ResizeObserver) { var ro = new ResizeObserver(function(){ recalc(); }); ro.observe(nav); }
-    } catch(e) {}
-
-    function handleScroll() {
-      var y = window.scrollY || 0;
-      var dy = y - lastY;
-      var atTop = y <= 8;
-      if (atTop) {
-        header.classList.remove('is-hidden');
-      } else if (dy > 6) {
-        header.classList.add('is-hidden');
-      } else if (dy < -6) {
-        header.classList.remove('is-hidden');
+          if (base !== '/' && cur.indexOf(base) === 0) {
+            if (base.length > best.len) best = { a: a, len: base.length };
+          }
+        });
+        links.forEach(function(a){ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
+        if (best.a) { best.a.classList.add('is-active'); best.a.setAttribute('aria-current', 'page'); }
       }
-      lastY = y;
-    }
-    window.addEventListener('scroll', function(){
-      if (!ticking) { ticking = true; requestAnimationFrame(function(){ handleScroll(); ticking = false; }); }
-    }, { passive: true });
 
-    document.addEventListener('astro:page-load', function() {
-      header.classList.remove('is-hidden');
-      lastY = window.scrollY || 0;
+      function updateLangToggle() {
+        var lang = document.getElementById('lang-toggle');
+        if (!lang) return;
+        var curPath = window.location.pathname;
+        var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+        var pathNoBase = (cleanBase !== '/' && curPath.indexOf(cleanBase) === 0)
+          ? '/' + curPath.slice(cleanBase.length)
+          : curPath;
+        var isEn = /^\/en(?:\/|$)/i.test(pathNoBase);
+        var pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+        if (!pathNoLocale.startsWith('/')) pathNoLocale = '/' + pathNoLocale;
+
+        var targetPath = isEn ? pathNoLocale : ('/en' + (pathNoLocale === '/' ? '/' : pathNoLocale));
+        var targetHref = (cleanBase !== '/' ? cleanBase.replace(/\/$/, '') : '') + targetPath;
+
+        lang.setAttribute('href', targetHref);
+        lang.setAttribute('title', isEn ? '切换为中文 (Switch to Chinese)' : 'Switch to English');
+        lang.setAttribute('aria-label', isEn ? '切换为中文' : 'Switch to English');
+        var labelEl = lang.querySelector('[data-lang-label]');
+        if (labelEl) labelEl.textContent = isEn ? '中' : 'EN';
+      }
+
+      function setPressed() {
+        var tBtn = document.getElementById('theme-toggle');
+        if (!tBtn) return;
+        var isDark = document.documentElement.classList.contains('dark');
+        tBtn.setAttribute('aria-pressed', String(isDark));
+      }
+
+      if (btn) {
+        btn.onclick = function() {
+          var d = document.documentElement;
+          var isDark = d.classList.toggle('dark');
+          try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+          setPressed();
+        };
+      }
+
+      nav.onmousemove = function(e) {
+        var hrect = hl.getBoundingClientRect();
+        if (hrect.width > 0) {
+          var relX = (e.clientX - hrect.left) / hrect.width;
+          relX = Math.max(0, Math.min(1, relX));
+          hl.style.setProperty('--hl-specular-x', (relX * 100).toFixed(1) + '%');
+        }
+      };
+
+      links.forEach(function(a) {
+        a.onmouseenter = function() { moveTo(a); hl.classList.add('is-active'); };
+        a.onfocus = function() { moveTo(a); hl.classList.add('is-active'); };
+        a.ontouchstart = function() { hl.classList.add('is-active'); };
+      });
+      nav.onmouseleave = function() {
+        recalc();
+        hl.classList.remove('is-active');
+        hl.style.setProperty('--hl-specular-x', '50%');
+      };
+
+      function handleScroll() {
+        var y = window.scrollY || 0;
+        var dy = y - lastY;
+        var atTop = y <= 8;
+        if (atTop) {
+          header.classList.remove('is-hidden');
+        } else if (dy > 6) {
+          header.classList.add('is-hidden');
+        } else if (dy < -6) {
+          header.classList.remove('is-hidden');
+        }
+        lastY = y;
+      }
+      window.onscroll = function(){
+        if (!ticking) { ticking = true; requestAnimationFrame(function(){ handleScroll(); ticking = false; }); }
+      };
+
       setActiveByURL();
       updateLangToggle();
       setPressed();
       recalc();
       scrollActiveIntoView('auto');
-    });
+    }
 
-    setActiveByURL();
-    updateLangToggle();
-    setPressed();
-    recalc();
-    scrollActiveIntoView('auto');
+    document.addEventListener('astro:page-load', initHeader);
+    initHeader();
   })();
 </script>
