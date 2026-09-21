@@ -1,0 +1,80 @@
+---
+import { normalizeAuthors, type AuthorItem } from '@utils/author'
+
+interface Props {
+  author?: any
+  authors?: any
+  showFootnote?: boolean
+  class?: string
+}
+
+const {
+  author,
+  authors,
+  showFootnote = true,
+  class: className = '',
+} = Astro.props as Props
+
+const authorList: AuthorItem[] = normalizeAuthors(author, authors)
+
+const hasEqualContribution = authorList.some((a) => a.equalContribution)
+const hasCorresponding = authorList.some((a) => a.corresponding)
+const correspondingAuthors = authorList.filter((a) => a.corresponding)
+---
+
+{authorList.length > 0 ? (
+  <div class={`author-list-container inline-flex flex-col gap-1.5 ${className}`}>
+    {/* 作者顺序列表 */}
+    <div class="author-names flex flex-wrap items-center gap-x-2 gap-y-1 text-slate-700 dark:text-slate-300">
+      {authorList.map((a, index) => {
+        const isLast = index === authorList.length - 1
+        return (
+          <span class="inline-flex items-center group relative whitespace-nowrap">
+            <span class="font-medium text-slate-900 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+              {a.name}
+            </span>
+
+            {/* 学术规范标注角标 */}
+            {(a.equalContribution || a.corresponding) && (
+              <sup class="ml-0.5 font-semibold text-xs tracking-tighter text-sky-600 dark:text-sky-400 select-none">
+                {a.equalContribution ? '†' : ''}
+                {a.corresponding ? '✉' : ''}
+              </sup>
+            )}
+
+            {/* 职责标签 (如: 文稿/排版/审核) */}
+            {a.role && (
+              <span class="ml-1 px-1.5 py-0.2 text-[11px] font-normal tracking-wide rounded bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-white/10">
+                {a.role}
+              </span>
+            )}
+
+            {/* 分隔逗号 */}
+            {!isLast && <span class="text-slate-400 dark:text-slate-500 mr-0.5">,</span>}
+          </span>
+        )
+      })}
+    </div>
+
+    {/* 学术期刊规范脚注：通讯作者与共同第一作者 / 共同贡献说明 */}
+    {showFootnote && (hasEqualContribution || hasCorresponding) && (
+      <div class="author-notes flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400 pt-0.5">
+        {hasEqualContribution && (
+          <span class="inline-flex items-center gap-1">
+            <span class="font-semibold text-sky-600 dark:text-sky-400">†</span>
+            <span>同等贡献 (Equal contribution)</span>
+          </span>
+        )}
+        {hasCorresponding && (
+          <span class="inline-flex items-center gap-1">
+            <span class="font-semibold text-sky-600 dark:text-sky-400">✉</span>
+            <span>
+              通讯作者 (Corresponding author)
+              {correspondingAuthors.length > 0 && `: ${correspondingAuthors.map((c) => c.name + (c.email ? ` (${c.email})` : '')).join(', ')}`}
+            </span>
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+) : null}

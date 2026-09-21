@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import { withBase } from '@utils/path'
+import { formatAuthorsString } from '@utils/author'
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles')
@@ -43,7 +44,7 @@ const { tag, list } = Astro.props
               <time datetime={a.data.date?.toISOString()}>
                 {a.data.date?.toISOString().slice(0, 10)}
               </time>
-              {a.data.author && <span>{a.data.author}</span>}
+              {formatAuthorsString(a.data.author, a.data.authors) && <span>{formatAuthorsString(a.data.author, a.data.authors)}</span>}
             </div>
             <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors">
               {a.data.title}
