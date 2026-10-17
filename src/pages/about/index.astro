@@ -5,7 +5,6 @@ import { getCollection } from 'astro:content'
 import { getI18n } from '@utils/i18n'
 import '@styles/about.css'
 import MarkdownContent from '@components/MarkdownContent.astro'
-import { withBase } from '@utils/path'
 
 const { t } = getI18n(Astro.url)
 
@@ -26,15 +25,6 @@ const departments = (await getCollection('departments')).sort(
       {Content ? (
         <MarkdownContent Content={Content} variant="about" align={aboutEntry?.data?.align} />
       ) : null}
-      <figure class="space-y-2">
-        <img
-          src={withBase('/images/about/laodage.jpg')}
-          alt="老大哥在看着你"
-          class="mx-auto block w-full max-w-sm rounded-2xl border border-black/[0.06] dark:border-white/[0.08]"
-          loading="lazy"
-        />
-        <figcaption class="text-center text-sm text-slate-500 dark:text-slate-400">老大哥在看着你</figcaption>
-      </figure>
       <section class="space-y-4">
         <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{t('about.departments', '部门')}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 dept-grid">
